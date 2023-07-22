@@ -1,7 +1,10 @@
 package com.utkarsh.companyemployeeapi.service.impl;
 
+import com.utkarsh.companyemployeeapi.entities.Company;
 import com.utkarsh.companyemployeeapi.entities.Employee;
 import com.utkarsh.companyemployeeapi.exception.DuplicateEntryException;
+import com.utkarsh.companyemployeeapi.exception.ResourceNotFoundException;
+import com.utkarsh.companyemployeeapi.repository.CompanyRepository;
 import com.utkarsh.companyemployeeapi.repository.EmployeeRepository;
 import com.utkarsh.companyemployeeapi.service.EmployeeService;
 import org.springframework.stereotype.Service;
@@ -13,9 +16,11 @@ import java.util.Objects;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final CompanyRepository companyRepository;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, CompanyRepository companyRepository) {
         this.employeeRepository = employeeRepository;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -25,7 +30,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new DuplicateEntryException("This user-email already exists");
         }
 
-        return employeeRepository.save(employee);
+        if (employee.getCompany() != null && employee.getCompany().getId() != null) {
+            Company existingCompany = companyRepository.findById(employee.getCompany().getId()).orElseThrow(() -> new ResourceNotFoundException("Company not found"));
+            employee.setCompany(existingCompany);
+        }
+            return employeeRepository.save(employee);
     }
 
     @Override

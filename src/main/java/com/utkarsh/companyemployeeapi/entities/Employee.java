@@ -19,8 +19,9 @@ public class Employee {
     private String lastName;
     private String email;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "company_id")
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "company_id" , referencedColumnName = "id")
     private Company company;
 
     @Override

@@ -17,7 +17,8 @@ import java.util.function.Function;
 public class JwtTokenUtil {
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
-    private static final String SECRET =   "SecretKeyToGenJWTs";
+
+    private static final String SECRET =   "egruihdhgshuoguhbhugbhubhgfbhubfhbsgfhsbhjbshjf";
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -52,7 +53,7 @@ public class JwtTokenUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(getSignKey(), SignatureAlgorithm.HS512).compact();
+                .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
     public Boolean validateToken(String token, String name) {
